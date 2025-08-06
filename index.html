@@ -38,6 +38,13 @@
         }
         th {
             background-color: #2a2a2a;
+            font-weight: normal;
+        }
+        td {
+            font-weight: bold;
+        }
+        .value {
+            font-size: calc(1em + 2pt);
         }
     </style>
 </head>
@@ -85,33 +92,33 @@
         function getAspectRatio(width, height) {
             const gcd = (a, b) => (b === 0 ? a : gcd(b, a % b));
             const divisor = gcd(width, height);
-            return `${width / divisor}:${height / divisor}`;
+            return `<span class="value">${width / divisor}:${height / divisor}</span>`;
         }
 
         // Screen Resolution
         const screenWidth = window.screen.width;
         const screenHeight = window.screen.height;
-        document.getElementById('screen-resolution').textContent = `${screenWidth} pixels wide x ${screenHeight} pixels high`;
+        document.getElementById('screen-resolution').innerHTML = `<span class="value">${screenWidth}</span> pixels wide x <span class="value">${screenHeight}</span> pixels high`;
 
         // Viewport Size
         const viewportWidth = window.innerWidth;
         const viewportHeight = window.innerHeight;
-        document.getElementById('viewport-size').textContent = `${viewportWidth} pixels wide x ${viewportHeight} pixels high`;
+        document.getElementById('viewport-size').innerHTML = `<span class="value">${viewportWidth}</span> pixels wide x <span class="value">${viewportHeight}</span> pixels high`;
 
         // Device Pixel Ratio
         const devicePixelRatio = window.devicePixelRatio;
-        document.getElementById('device-pixel-ratio').textContent = devicePixelRatio;
+        document.getElementById('device-pixel-ratio').innerHTML = `<span class="value">${devicePixelRatio}</span>`;
 
         // Color Depth
         const colorDepth = window.screen.colorDepth;
-        document.getElementById('color-depth').textContent = colorDepth;
+        document.getElementById('color-depth').innerHTML = `<span class="value">${colorDepth}</span>`;
 
         // Pixel Depth
         const pixelDepth = window.screen.pixelDepth;
-        document.getElementById('pixel-depth').textContent = pixelDepth;
+        document.getElementById('pixel-depth').innerHTML = `<span class="value">${pixelDepth}</span>`;
 
         // Aspect Ratio
-        document.getElementById('aspect-ratio').textContent = getAspectRatio(screenWidth, screenHeight);
+        document.getElementById('aspect-ratio').innerHTML = getAspectRatio(screenWidth, screenHeight);
 
         // Multitaction Display Dimensions & Diagonal
         const ppi = 40.05;
@@ -122,8 +129,8 @@
         const diagonalInches = Math.sqrt(Math.pow(displayWidthInches, 2) + Math.pow(displayHeightInches, 2));
         const diagonalCm = diagonalInches * 2.54;
 
-        document.getElementById('display-dimensions').textContent = `${displayWidthInches.toFixed(2)}\" (${displayWidthCm.toFixed(2)} cm) x ${displayHeightInches.toFixed(2)}\" (${displayHeightCm.toFixed(2)} cm)`;
-        document.getElementById('screen-diagonal').textContent = `${diagonalInches.toFixed(2)}\" (${diagonalCm.toFixed(2)} cm)`;
+        document.getElementById('display-dimensions').innerHTML = `<span class="value">${displayWidthInches.toFixed(2)}"</span> (<span class="value">${displayWidthCm.toFixed(2)}</span> cm) x <span class="value">${displayHeightInches.toFixed(2)}"</span> (<span class="value">${displayHeightCm.toFixed(2)}</span> cm)`;
+        document.getElementById('screen-diagonal').innerHTML = `<span class="value">${diagonalInches.toFixed(2)}"</span> (<span class="value">${diagonalCm.toFixed(2)}</span> cm)`;
 
     </script>
 </body>
