@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Screen Resolution</title>
+    <style>
+        body {
+            font-family: "neue-haas-unica", sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background-color: #000;
+            color: #fff;
+        }
+        .container {
+            text-align: center;
+            background-color: #1c1c1c;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        #logo {
+            max-width: 200px;
+            margin-bottom: 1rem;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+        th, td {
+            padding: 0.75rem;
+            text-align: left;
+            border-bottom: 1px solid #333;
+        }
+        th {
+            background-color: #2a2a2a;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <img id="logo" src="/home/jaypaulb/Documents/github/ScreenRes/logo.webp" alt="Multitaction Logo">
+        <h1>What is my Screen Resolution?</h1>
+        <table>
+            <tr>
+                <th>My Screen Resolution is:</th>
+                <td id="screen-resolution"></td>
+            </tr>
+            <tr>
+                <th>My Viewport Size is:</th>
+                <td id="viewport-size"></td>
+            </tr>
+            <tr>
+                <th>My Device Pixel Ratio is:</th>
+                <td id="device-pixel-ratio"></td>
+            </tr>
+            <tr>
+                <th>Multitaction Display Dimensions are:</th>
+                <td id="display-dimensions"></td>
+            </tr>
+            <tr>
+                <th>My Screen Diagonal Size is:</th>
+                <td id="screen-diagonal"></td>
+            </tr>
+            <tr>
+                <th>My Color Depth (bits per pixel) is:</th>
+                <td id="color-depth"></td>
+            </tr>
+            <tr>
+                <th>My Pixel Depth is:</th>
+                <td id="pixel-depth"></td>
+            </tr>
+            <tr>
+                <th>My Display Aspect Ratio is:</th>
+                <td id="aspect-ratio"></td>
+            </tr>
+        </table>
+    </div>
+
+    <script>
+        function getAspectRatio(width, height) {
+            const gcd = (a, b) => (b === 0 ? a : gcd(b, a % b));
+            const divisor = gcd(width, height);
+            return `${width / divisor}:${height / divisor}`;
+        }
+
+        // Screen Resolution
+        const screenWidth = window.screen.width;
+        const screenHeight = window.screen.height;
+        document.getElementById('screen-resolution').textContent = `${screenWidth} pixels wide x ${screenHeight} pixels high`;
+
+        // Viewport Size
+        const viewportWidth = window.innerWidth;
+        const viewportHeight = window.innerHeight;
+        document.getElementById('viewport-size').textContent = `${viewportWidth} pixels wide x ${viewportHeight} pixels high`;
+
+        // Device Pixel Ratio
+        const devicePixelRatio = window.devicePixelRatio;
+        document.getElementById('device-pixel-ratio').textContent = devicePixelRatio;
+
+        // Color Depth
+        const colorDepth = window.screen.colorDepth;
+        document.getElementById('color-depth').textContent = colorDepth;
+
+        // Pixel Depth
+        const pixelDepth = window.screen.pixelDepth;
+        document.getElementById('pixel-depth').textContent = pixelDepth;
+
+        // Aspect Ratio
+        document.getElementById('aspect-ratio').textContent = getAspectRatio(screenWidth, screenHeight);
+
+        // Multitaction Display Dimensions & Diagonal
+        const ppi = 40.05;
+        const displayWidthInches = screenWidth / ppi;
+        const displayHeightInches = screenHeight / ppi;
+        const displayWidthCm = displayWidthInches * 2.54;
+        const displayHeightCm = displayHeightInches * 2.54;
+        const diagonalInches = Math.sqrt(Math.pow(displayWidthInches, 2) + Math.pow(displayHeightInches, 2));
+        const diagonalCm = diagonalInches * 2.54;
+
+        document.getElementById('display-dimensions').textContent = `${displayWidthInches.toFixed(2)}\" (${displayWidthCm.toFixed(2)} cm) x ${displayHeightInches.toFixed(2)}\" (${displayHeightCm.toFixed(2)} cm)`;
+        document.getElementById('screen-diagonal').textContent = `${diagonalInches.toFixed(2)}\" (${diagonalCm.toFixed(2)} cm)`;
+
+    </script>
+</body>
+</html>
