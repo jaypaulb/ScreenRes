@@ -1,137 +1,288 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>My Screen Resolution</title>
     <style>
-        body {
-            font-family: "neue-haas-unica", sans-serif;
+        :root {
+            --bg: #000;
+            --card: #1c1c1c;
+            --muted: #2a2a2a;
+            --text: #fff;
+            --padding: clamp(12px, 2.5vw, 32px);
+        }
+
+        html, body {
+            height: 100%;
+            margin: 0;
+            background: var(--bg);
+            color: var(--text);
+            font-family: "neue-haas-unica", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+        }
+
+        .wrap {
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            margin: 0;
-            background-color: #000;
-            color: #fff;
+            padding: 1vh 1vw;
         }
+
         .container {
+            background-color: var(--card);
+            padding: var(--padding);
+            border-radius: 10px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.5);
             text-align: center;
-            background-color: #1c1c1c;
-            padding: 2rem;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            max-width: 1200px;
+            width: min(95vw, 1100px);
+            transform-origin: center center;
+            transition: transform 160ms cubic-bezier(.2,.8,.2,1);
         }
+
         #logo {
-            max-width: 200px;
-            margin-bottom: 1rem;
+            max-width: 240px;
+            height: auto;
+            display: block;
+            margin: 0 auto 1rem auto;
         }
+
+        h1 {
+            margin: 0.25rem 0 0.5rem 0;
+            font-size: clamp(1rem, 3.4vw, 2.1rem);
+        }
+
         table {
             width: 100%;
             border-collapse: collapse;
             margin-top: 1rem;
         }
+
         th, td {
-            padding: 0.75rem;
+            padding: clamp(6px, 1.6vw, 14px);
             text-align: left;
-            border-bottom: 1px solid #333;
+            border-bottom: 1px solid rgba(255,255,255,0.04);
+            vertical-align: middle;
         }
+
         th {
-            background-color: #2a2a2a;
-            font-weight: normal;
+            background-color: var(--muted);
+            font-weight: 500;
+            width: 45%;
+            white-space: nowrap;
         }
+
         td {
-            font-weight: bold;
+            font-weight: 700;
+            width: 55%;
         }
+
         .value {
-            font-size: calc(1em + 2pt);
+            display: inline-block;
+            font-size: clamp(.9rem, 2.6vw, 1.6rem);
+            line-height: 1.15;
+        }
+
+        @media (max-width: 520px) {
+            table, thead, tbody, th, td, tr {
+                display: block;
+            }
+            th {
+                width: 100%;
+                border-bottom: none;
+                margin-bottom: 6px;
+            }
+            td {
+                width: 100%;
+                margin-bottom: 12px;
+                border-bottom: 1px solid rgba(255,255,255,0.04);
+            }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <img id="logo" src="logo.webp" alt="Multitaction Logo">
-        <h1>What is my Screen Resolution?</h1>
-        <table>
-            <tr>
-                <th>My Screen Resolution is:</th>
-                <td id="screen-resolution"></td>
-            </tr>
-            <tr>
-                <th>My Viewport Size is:</th>
-                <td id="viewport-size"></td>
-            </tr>
-            <tr>
-                <th>My Device Pixel Ratio is:</th>
-                <td id="device-pixel-ratio"></td>
-            </tr>
-            <tr>
-                <th>Multitaction Display Dimensions are:</th>
-                <td id="display-dimensions"></td>
-            </tr>
-            <tr>
-                <th>My Screen Diagonal Size is:</th>
-                <td id="screen-diagonal"></td>
-            </tr>
-            <tr>
-                <th>My Color Depth (bits per pixel) is:</th>
-                <td id="color-depth"></td>
-            </tr>
-            <tr>
-                <th>My Pixel Depth is:</th>
-                <td id="pixel-depth"></td>
-            </tr>
-            <tr>
-                <th>My Display Aspect Ratio is:</th>
-                <td id="aspect-ratio"></td>
-            </tr>
-        </table>
+    <div class="wrap">
+        <div class="container" id="container">
+            <img id="logo" src="logo.webp" alt="Multitaction Logo" />
+            <h1>What is my Screen Resolution?</h1>
+            <table>
+                <tr>
+                    <th>My Screen Resolution is:</th>
+                    <td id="screen-resolution"></td>
+                </tr>
+                <tr>
+                    <th>My Viewport Size is:</th>
+                    <td id="viewport-size"></td>
+                </tr>
+                <tr>
+                    <th>My Device Pixel Ratio is:</th>
+                    <td id="device-pixel-ratio"></td>
+                </tr>
+                <tr>
+                    <th>Multitaction Display Dimensions are:</th>
+                    <td id="display-dimensions"></td>
+                </tr>
+                <tr>
+                    <th>My Screen Diagonal Size is:</th>
+                    <td id="screen-diagonal"></td>
+                </tr>
+                <tr>
+                    <th>My Color Depth (bits per pixel) is:</th>
+                    <td id="color-depth"></td>
+                </tr>
+                <tr>
+                    <th>My Pixel Depth is:</th>
+                    <td id="pixel-depth"></td>
+                </tr>
+                <tr>
+                    <th>My Display Aspect Ratio is:</th>
+                    <td id="aspect-ratio"></td>
+                </tr>
+            </table>
+        </div>
     </div>
 
     <script>
+        // Helper: compute GCD and aspect ratio
         function getAspectRatio(width, height) {
             const gcd = (a, b) => (b === 0 ? a : gcd(b, a % b));
             const divisor = gcd(width, height);
             return `<span class="value">${width / divisor}:${height / divisor}</span>`;
         }
 
-        // Screen Resolution
-        const screenWidth = window.screen.width;
-        const screenHeight = window.screen.height;
-        document.getElementById('screen-resolution').innerHTML = `<span class="value">${screenWidth}</span> pixels wide x <span class="value">${screenHeight}</span> pixels high`;
+        // Populate the data fields
+        function updateMetrics() {
+            const screenWidth = window.screen.width;
+            const screenHeight = window.screen.height;
+            document.getElementById('screen-resolution').innerHTML =
+                `<span class="value">${screenWidth}</span> pixels wide x <span class="value">${screenHeight}</span> pixels high`;
 
-        // Viewport Size
-        const viewportWidth = window.innerWidth;
-        const viewportHeight = window.innerHeight;
-        document.getElementById('viewport-size').innerHTML = `<span class="value">${viewportWidth}</span> pixels wide x <span class="value">${viewportHeight}</span> pixels high`;
+            const viewportWidth = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0);
+            const viewportHeight = Math.max(document.documentElement.clientHeight || 0, window.innerHeight || 0);
+            document.getElementById('viewport-size').innerHTML =
+                `<span class="value">${viewportWidth}</span> pixels wide x <span class="value">${viewportHeight}</span> pixels high`;
 
-        // Device Pixel Ratio
-        const devicePixelRatio = window.devicePixelRatio;
-        document.getElementById('device-pixel-ratio').innerHTML = `<span class="value">${devicePixelRatio}</span>`;
+            const devicePixelRatio = window.devicePixelRatio || 1;
+            document.getElementById('device-pixel-ratio').innerHTML = `<span class="value">${devicePixelRatio}</span>`;
 
-        // Color Depth
-        const colorDepth = window.screen.colorDepth;
-        document.getElementById('color-depth').innerHTML = `<span class="value">${colorDepth}</span>`;
+            const colorDepth = window.screen.colorDepth || 'N/A';
+            const pixelDepth = window.screen.pixelDepth || 'N/A';
+            document.getElementById('color-depth').innerHTML = `<span class="value">${colorDepth}</span>`;
+            document.getElementById('pixel-depth').innerHTML = `<span class="value">${pixelDepth}</span>`;
 
-        // Pixel Depth
-        const pixelDepth = window.screen.pixelDepth;
-        document.getElementById('pixel-depth').innerHTML = `<span class="value">${pixelDepth}</span>`;
+            document.getElementById('aspect-ratio').innerHTML = getAspectRatio(screenWidth, screenHeight);
 
-        // Aspect Ratio
-        document.getElementById('aspect-ratio').innerHTML = getAspectRatio(screenWidth, screenHeight);
+            // Multitaction Display Dimensions & Diagonal (using a PPI estimate)
+            const ppi = 40.05;
+            const displayWidthInches = screenWidth / ppi;
+            const displayHeightInches = screenHeight / ppi;
+            const displayWidthCm = displayWidthInches * 2.54;
+            const displayHeightCm = displayHeightInches * 2.54;
+            const diagonalInches = Math.sqrt(Math.pow(displayWidthInches, 2) + Math.pow(displayHeightInches, 2));
+            const diagonalCm = diagonalInches * 2.54;
 
-        // Multitaction Display Dimensions & Diagonal
-        const ppi = 40.05;
-        const displayWidthInches = screenWidth / ppi;
-        const displayHeightInches = screenHeight / ppi;
-        const displayWidthCm = displayWidthInches * 2.54;
-        const displayHeightCm = displayHeightInches * 2.54;
-        const diagonalInches = Math.sqrt(Math.pow(displayWidthInches, 2) + Math.pow(displayHeightInches, 2));
-        const diagonalCm = diagonalInches * 2.54;
+            document.getElementById('display-dimensions').innerHTML =
+                `<span class="value">${displayWidthInches.toFixed(2)}"</span> (<span class="value">${displayWidthCm.toFixed(2)}</span> cm) x <span class="value">${displayHeightInches.toFixed(2)}"</span> (<span class="value">${displayHeightCm.toFixed(2)}</span> cm)`;
 
-        document.getElementById('display-dimensions').innerHTML = `<span class="value">${displayWidthInches.toFixed(2)}"</span> (<span class="value">${displayWidthCm.toFixed(2)}</span> cm) x <span class="value">${displayHeightInches.toFixed(2)}"</span> (<span class="value">${displayHeightCm.toFixed(2)}</span> cm)`;
-        document.getElementById('screen-diagonal').innerHTML = `<span class="value">${diagonalInches.toFixed(2)}"</span> (<span class="value">${diagonalCm.toFixed(2)}</span> cm)`;
+            document.getElementById('screen-diagonal').innerHTML =
+                `<span class="value">${diagonalInches.toFixed(2)}"</span> (<span class="value">${diagonalCm.toFixed(2)}</span> cm)`;
+        }
 
+        // Fit container to viewport, but allow upscaling when the display has more pixels.
+        // The user wanted the content to appear larger on higher-resolution displays.
+        // Strategy:
+        // 1. Measure the container's natural size.
+        // 2. Compute scale to fit within viewport with margin.
+        // 3. Multiply by devicePixelRatio to make UI larger on high-dpi screens (you can disable this behavior).
+        // 4. Clamp to a reasonable maximum to avoid absurdly large scaling.
+        function fitContainerToViewport() {
+            const container = document.getElementById('container');
+            if (!container) return;
+            // Reset transform so measurements are of natural size
+            container.style.transform = 'none';
+
+            const rect = container.getBoundingClientRect();
+            const naturalW = rect.width;
+            const naturalH = rect.height;
+
+            const vw = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0);
+            const vh = Math.max(document.documentElement.clientHeight || 0, window.innerHeight || 0);
+
+            // margin to leave some breathing room
+            const marginFactor = 0.95;
+
+            const targetW = vw * marginFactor;
+            const targetH = vh * marginFactor;
+
+            // scale to fit both dimensions
+            let scale = Math.min(targetW / naturalW, targetH / naturalH);
+
+            // Option: if you want the page to appear larger on high-res displays,
+            // multiply by devicePixelRatio. Set includeDPR=false to disable.
+            const includeDPR = true;
+            if (includeDPR) {
+                const dpr = window.devicePixelRatio || 1;
+                scale = scale * dpr;
+            }
+
+            // Clamp scale to avoid making it enormous. Adjust maxScale if you want more upscaling.
+            const maxScale = 3; // allow up to 3x
+            const minScale = 0.4; // avoid being tiny on very small screens
+            scale = Math.max(minScale, Math.min(scale, maxScale));
+
+            container.style.transform = `translateZ(0) scale(${scale})`;
+        }
+
+        // If you'd rather "set the height of the page to the viewport height value"
+        // (e.g., make the container CSS height equal to the measured viewport height),
+        // uncomment & use this simple function instead of fitContainerToViewport():
+        /*
+        function setContainerHeightToViewport() {
+            const container = document.getElementById('container');
+            if (!container) return;
+            const vh = Math.max(document.documentElement.clientHeight || 0, window.innerHeight || 0);
+            // set container height to viewport height (will cause internal layout to stretch)
+            container.style.height = vh + 'px';
+            // Optionally set width proportionally or leave it responsive:
+            // const vw = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0);
+            // container.style.width = Math.min(vw * 0.95, '1100px');
+        }
+        */
+
+        function updateAll() {
+            updateMetrics();
+            requestAnimationFrame(() => {
+                requestAnimationFrame(() => {
+                    fitContainerToViewport();
+                });
+            });
+        }
+
+        // Update when DPR may change (zoom etc.)
+        let lastDevicePixelRatio = window.devicePixelRatio;
+        setInterval(() => {
+            if (window.devicePixelRatio !== lastDevicePixelRatio) {
+                lastDevicePixelRatio = window.devicePixelRatio;
+                updateAll();
+            }
+        }, 500);
+
+        window.addEventListener('resize', updateAll);
+        window.addEventListener('orientationchange', updateAll);
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const logo = document.getElementById('logo');
+            if (logo && !logo.complete) {
+                logo.addEventListener('load', updateAll);
+                logo.addEventListener('error', updateAll);
+            }
+            updateAll();
+        });
+
+        if (document.fonts && document.fonts.ready) {
+            document.fonts.ready.then(updateAll).catch(() => {});
+        }
     </script>
 </body>
 </html>
